@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- "." (not "") — the font ships flat in Resources root (see the
+	     Xcode project's Resources build phase), and an empty string
+	     here is unreliable in practice even though Apple's docs treat
+	     it as equivalent to ".". UIAppFonts is iOS/tvOS-only and does
+	     nothing on macOS, so it's gone — it was never doing anything
+	     here, just masking the real (missing) mechanism. -->
+	<key>ATSApplicationFontsPath</key>
+	<string>.</string>
+</dict>
+</plist>

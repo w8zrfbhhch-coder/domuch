@@ -1,0 +1,21 @@
+# Personal data — this is a real, synced habit-tracking data file,
+# not sample/seed data. Never belongs in git.
+drinkstand-data.json
+
+# Local backups made before an overwrite (see the working directory
+# itself — these are throwaway safety copies, not project history).
+.pre-overwrite-backup-*/
+
+# Xcode per-user state (breakpoints, window layout, selected scheme) —
+# machine-specific, regenerated automatically, and a source of
+# needless merge conflicts between the two Macs this project is
+# worked on from.
+Drinkstand.xcodeproj/xcuserdata/
+Drinkstand.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
+
+# Build output.
+build/
+DerivedData/
+
+.DS_Store

@@ -6,7 +6,32 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3E27D31F3036FAD600C02A59 /* GoogleSansCode-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E27D31D3036FAD600C02A59 /* GoogleSansCode-Medium.ttf */; };
+		3E5E22A4303C47B5000F18F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA4BEE303319A7005FC7F6 /* ContentView.swift */; };
+		3E5E22A5303C47C0000F18F6 /* WaterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA4BF0303319A7005FC7F6 /* WaterStore.swift */; };
+		3E5E22A6303C47E8000F18F6 /* GoogleSansCode-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E27D31D3036FAD600C02A59 /* GoogleSansCode-Medium.ttf */; };
+		3ECA4BF1303319A7005FC7F6 /* WaterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA4BF0303319A7005FC7F6 /* WaterStore.swift */; };
+		3ECA4BF2303319A7005FC7F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA4BEE303319A7005FC7F6 /* ContentView.swift */; };
+		3ECA4BF3303319A7005FC7F6 /* DrinkstandApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA4BEF303319A7005FC7F6 /* DrinkstandApp.swift */; };
+		3ECA4BF63035B36B005FC7F6 /* IconShapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA4BF53035B36B005FC7F6 /* IconShapes.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		3E5E2234303C401E000F18F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3ECA4BBC3033196A005FC7F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3E5E2226303C401E000F18F6;
+			remoteInfo = "Drinkstand ios";
+		};
+		3E5E223E303C401F000F18F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3ECA4BBC3033196A005FC7F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3E5E2226303C401E000F18F6;
+			remoteInfo = "Drinkstand ios";
+		};
 		3ECA4BD23033196B005FC7F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3ECA4BBC3033196A005FC7F6 /* Project object */;
@@ -24,14 +49,61 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3E27D31D3036FAD600C02A59 /* GoogleSansCode-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSansCode-Medium.ttf"; sourceTree = "<group>"; };
+		3E5E2227303C401E000F18F6 /* Drinkstand ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Drinkstand ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E5E2233303C401E000F18F6 /* Drinkstand iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Drinkstand iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E5E223D303C401F000F18F6 /* Drinkstand iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Drinkstand iosUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ECA4BC43033196A005FC7F6 /* Drinkstand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drinkstand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ECA4BD13033196B005FC7F6 /* DrinkstandTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrinkstandTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ECA4BDB3033196B005FC7F6 /* DrinkstandUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrinkstandUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3ECA4BEE303319A7005FC7F6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3ECA4BEF303319A7005FC7F6 /* DrinkstandApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkstandApp.swift; sourceTree = "<group>"; };
+		3ECA4BF0303319A7005FC7F6 /* WaterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterStore.swift; sourceTree = "<group>"; };
+		3ECA4BF4303319B7005FC7F6 /* Drinkstand-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Drinkstand-Bridging-Header.h"; sourceTree = "<group>"; };
+		3ECA4BF53035B36B005FC7F6 /* IconShapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconShapes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3E27D32130371D6E00C02A59 /* Exceptions for "Drinkstand" folder in "Drinkstand" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3ECA4BC33033196A005FC7F6 /* Drinkstand */;
+		};
+		3E5E22A8303C4822000F18F6 /* Exceptions for "Drinkstand ios" folder in "Drinkstand ios" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Drinkstand-ios-Info.plist",
+			);
+			target = 3E5E2226303C401E000F18F6 /* Drinkstand ios */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3E5E2228303C401E000F18F6 /* Drinkstand ios */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3E5E22A8303C4822000F18F6 /* Exceptions for "Drinkstand ios" folder in "Drinkstand ios" target */,
+			);
+			path = "Drinkstand ios";
+			sourceTree = "<group>";
+		};
+		3E5E2236303C401E000F18F6 /* Drinkstand iosTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Drinkstand iosTests";
+			sourceTree = "<group>";
+		};
+		3E5E2240303C401F000F18F6 /* Drinkstand iosUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Drinkstand iosUITests";
+			sourceTree = "<group>";
+		};
 		3ECA4BC63033196A005FC7F6 /* Drinkstand */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3E27D32130371D6E00C02A59 /* Exceptions for "Drinkstand" folder in "Drinkstand" target */,
+			);
 			path = Drinkstand;
 			sourceTree = "<group>";
 		};
@@ -48,6 +120,27 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3E5E2224303C401E000F18F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E5E2230303C401E000F18F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E5E223A303C401F000F18F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3ECA4BC13033196A005FC7F6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -72,13 +165,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E27D31E3036FAD600C02A59 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		3ECA4BBB3033196A005FC7F6 = {
 			isa = PBXGroup;
 			children = (
 				3ECA4BC63033196A005FC7F6 /* Drinkstand */,
 				3ECA4BD43033196B005FC7F6 /* DrinkstandTests */,
 				3ECA4BDE3033196B005FC7F6 /* DrinkstandUITests */,
+				3E5E2228303C401E000F18F6 /* Drinkstand ios */,
+				3E5E2236303C401E000F18F6 /* Drinkstand iosTests */,
+				3E5E2240303C401F000F18F6 /* Drinkstand iosUITests */,
 				3ECA4BC53033196A005FC7F6 /* Products */,
+				3ECA4BEE303319A7005FC7F6 /* ContentView.swift */,
+				3ECA4BF53035B36B005FC7F6 /* IconShapes.swift */,
+				3ECA4BEF303319A7005FC7F6 /* DrinkstandApp.swift */,
+				3ECA4BF0303319A7005FC7F6 /* WaterStore.swift */,
+				3E27D31D3036FAD600C02A59 /* GoogleSansCode-Medium.ttf */,
+				3ECA4BF4303319B7005FC7F6 /* Drinkstand-Bridging-Header.h */,
+				3E27D31E3036FAD600C02A59 /* Fonts */,
 			);
 			sourceTree = "<group>";
 		};
@@ -88,6 +198,9 @@
 				3ECA4BC43033196A005FC7F6 /* Drinkstand.app */,
 				3ECA4BD13033196B005FC7F6 /* DrinkstandTests.xctest */,
 				3ECA4BDB3033196B005FC7F6 /* DrinkstandUITests.xctest */,
+				3E5E2227303C401E000F18F6 /* Drinkstand ios.app */,
+				3E5E2233303C401E000F18F6 /* Drinkstand iosTests.xctest */,
+				3E5E223D303C401F000F18F6 /* Drinkstand iosUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +208,74 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3E5E2226303C401E000F18F6 /* Drinkstand ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E5E224B303C401F000F18F6 /* Build configuration list for PBXNativeTarget "Drinkstand ios" */;
+			buildPhases = (
+				3E5E2223303C401E000F18F6 /* Sources */,
+				3E5E2224303C401E000F18F6 /* Frameworks */,
+				3E5E2225303C401E000F18F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3E5E2228303C401E000F18F6 /* Drinkstand ios */,
+			);
+			name = "Drinkstand ios";
+			packageProductDependencies = (
+			);
+			productName = "Drinkstand ios";
+			productReference = 3E5E2227303C401E000F18F6 /* Drinkstand ios.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3E5E2232303C401E000F18F6 /* Drinkstand iosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E5E224C303C401F000F18F6 /* Build configuration list for PBXNativeTarget "Drinkstand iosTests" */;
+			buildPhases = (
+				3E5E222F303C401E000F18F6 /* Sources */,
+				3E5E2230303C401E000F18F6 /* Frameworks */,
+				3E5E2231303C401E000F18F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3E5E2235303C401E000F18F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3E5E2236303C401E000F18F6 /* Drinkstand iosTests */,
+			);
+			name = "Drinkstand iosTests";
+			packageProductDependencies = (
+			);
+			productName = "Drinkstand iosTests";
+			productReference = 3E5E2233303C401E000F18F6 /* Drinkstand iosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		3E5E223C303C401F000F18F6 /* Drinkstand iosUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E5E224D303C401F000F18F6 /* Build configuration list for PBXNativeTarget "Drinkstand iosUITests" */;
+			buildPhases = (
+				3E5E2239303C401F000F18F6 /* Sources */,
+				3E5E223A303C401F000F18F6 /* Frameworks */,
+				3E5E223B303C401F000F18F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3E5E223F303C401F000F18F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3E5E2240303C401F000F18F6 /* Drinkstand iosUITests */,
+			);
+			name = "Drinkstand iosUITests";
+			packageProductDependencies = (
+			);
+			productName = "Drinkstand iosUITests";
+			productReference = 3E5E223D303C401F000F18F6 /* Drinkstand iosUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		3ECA4BC33033196A005FC7F6 /* Drinkstand */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3ECA4BE53033196B005FC7F6 /* Build configuration list for PBXNativeTarget "Drinkstand" */;
@@ -173,8 +354,20 @@
 				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					3E5E2226303C401E000F18F6 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					3E5E2232303C401E000F18F6 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = 3E5E2226303C401E000F18F6;
+					};
+					3E5E223C303C401F000F18F6 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = 3E5E2226303C401E000F18F6;
+					};
 					3ECA4BC33033196A005FC7F6 = {
 						CreatedOnToolsVersion = 26.4;
+						LastSwiftMigration = 2640;
 					};
 					3ECA4BD03033196B005FC7F6 = {
 						CreatedOnToolsVersion = 26.4;
@@ -203,15 +396,41 @@
 				3ECA4BC33033196A005FC7F6 /* Drinkstand */,
 				3ECA4BD03033196B005FC7F6 /* DrinkstandTests */,
 				3ECA4BDA3033196B005FC7F6 /* DrinkstandUITests */,
+				3E5E2226303C401E000F18F6 /* Drinkstand ios */,
+				3E5E2232303C401E000F18F6 /* Drinkstand iosTests */,
+				3E5E223C303C401F000F18F6 /* Drinkstand iosUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3E5E2225303C401E000F18F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3E5E22A6303C47E8000F18F6 /* GoogleSansCode-Medium.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E5E2231303C401E000F18F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E5E223B303C401F000F18F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3ECA4BC23033196A005FC7F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E27D31F3036FAD600C02A59 /* GoogleSansCode-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,10 +451,37 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3E5E2223303C401E000F18F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3E5E22A4303C47B5000F18F6 /* ContentView.swift in Sources */,
+				3E5E22A5303C47C0000F18F6 /* WaterStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E5E222F303C401E000F18F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E5E2239303C401F000F18F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3ECA4BC03033196A005FC7F6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3ECA4BF63035B36B005FC7F6 /* IconShapes.swift in Sources */,
+				3ECA4BF1303319A7005FC7F6 /* WaterStore.swift in Sources */,
+				3ECA4BF2303319A7005FC7F6 /* ContentView.swift in Sources */,
+				3ECA4BF3303319A7005FC7F6 /* DrinkstandApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +502,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3E5E2235303C401E000F18F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3E5E2226303C401E000F18F6 /* Drinkstand ios */;
+			targetProxy = 3E5E2234303C401E000F18F6 /* PBXContainerItemProxy */;
+		};
+		3E5E223F303C401F000F18F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3E5E2226303C401E000F18F6 /* Drinkstand ios */;
+			targetProxy = 3E5E223E303C401F000F18F6 /* PBXContainerItemProxy */;
+		};
 		3ECA4BD33033196B005FC7F6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3ECA4BC33033196A005FC7F6 /* Drinkstand */;
@@ -269,6 +525,171 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3E5E2245303C401F000F18F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Drinkstand ios/Drinkstand ios.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 5TB2336ZZE;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Drinkstand-ios-Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "pimp.Drinkstand-ios";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3E5E2246303C401F000F18F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Drinkstand ios/Drinkstand ios.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 5TB2336ZZE;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Drinkstand-ios-Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "pimp.Drinkstand-ios";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3E5E2247303C401F000F18F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 5TB2336ZZE;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "pimp.Drinkstand-iosTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Drinkstand ios.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Drinkstand ios";
+			};
+			name = Debug;
+		};
+		3E5E2248303C401F000F18F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 5TB2336ZZE;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "pimp.Drinkstand-iosTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Drinkstand ios.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Drinkstand ios";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3E5E2249303C401F000F18F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 5TB2336ZZE;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "pimp.Drinkstand-iosUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Drinkstand ios";
+			};
+			name = Debug;
+		};
+		3E5E224A303C401F000F18F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 5TB2336ZZE;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "pimp.Drinkstand-iosUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Drinkstand ios";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		3ECA4BE33033196B005FC7F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -394,15 +815,28 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Drinkstand/Drinkstand.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5TB2336ZZE;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Drinkstand/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -416,6 +850,8 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Drinkstand-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -426,15 +862,28 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Drinkstand/Drinkstand.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5TB2336ZZE;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Drinkstand/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -448,6 +897,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Drinkstand-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -536,6 +986,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3E5E224B303C401F000F18F6 /* Build configuration list for PBXNativeTarget "Drinkstand ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E5E2245303C401F000F18F6 /* Debug */,
+				3E5E2246303C401F000F18F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3E5E224C303C401F000F18F6 /* Build configuration list for PBXNativeTarget "Drinkstand iosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E5E2247303C401F000F18F6 /* Debug */,
+				3E5E2248303C401F000F18F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3E5E224D303C401F000F18F6 /* Build configuration list for PBXNativeTarget "Drinkstand iosUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E5E2249303C401F000F18F6 /* Debug */,
+				3E5E224A303C401F000F18F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3ECA4BBF3033196A005FC7F6 /* Build configuration list for PBXProject "Drinkstand" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
