@@ -300,6 +300,10 @@ struct TodoTextField: UIViewRepresentable {
     let isFocused: Bool
     let textColor: UIColor
     let font: UIFont?
+    /// `.right` on the trackers page (fields hang off the right edge,
+    /// under the "todo" label's column); `.left` in the first-run
+    /// tour, where the field is the only thing on the page.
+    var alignment: NSTextAlignment = .right
     let onFocusChange: (Bool) -> Void
     let onSubmit: () -> Void
     let onBackspaceWhenEmpty: () -> Void
@@ -323,7 +327,7 @@ struct TodoTextField: UIViewRepresentable {
         // AFTER defaultTextAttributes, never before: assigning that
         // dictionary resets the alignment back to natural (left), so
         // setting it first silently does nothing.
-        field.textAlignment = .right
+        field.textAlignment = alignment
         field.onBackspaceWhenEmpty = onBackspaceWhenEmpty
         field.addTarget(
             context.coordinator,
@@ -339,7 +343,7 @@ struct TodoTextField: UIViewRepresentable {
         // handler rather than the one from when the view was created.
         field.onBackspaceWhenEmpty = onBackspaceWhenEmpty
         if field.text != text { field.text = text }
-        field.textAlignment = .right
+        field.textAlignment = alignment
         if isFocused, !field.isFirstResponder {
             field.becomeFirstResponder()
         } else if !isFocused, field.isFirstResponder {
@@ -748,6 +752,29 @@ struct ContentView: View {
     @State private var goalSheetKind: TrackerKind?
     @State private var pendingGoal = 0
     @State private var historySheetDate: Date = .now
+
+    // First-run tour. `hasSeenTour` is @AppStorage — i.e. plain
+    // UserDefaults, deliberately NOT part of `AppData` and so NOT
+    // synced through CloudKit: it's a property of this install, not
+    // of the account, and hanging it off the settings record would
+    // put it at the mercy of that record's last-write-wins merge.
+    // Each device therefore shows the tour exactly once.
+    @AppStorage("hasSeenFirstRunTour") private var hasSeenTour = false
+    // Ships OFF: this build's TestFlight users shouldn't see the tour
+    // yet, but it should stay reachable for testing — see
+    // "replay tour" under test stuff, and the `onAppear` this gates.
+    // One line to flip when it's ready for real users.
+    private let tourEnabledOnLaunch = false
+    @State private var showingTour = false
+    @State private var tourPage: TourPage = .goal
+    @State private var tourGoalKind: TrackerKind?
+    @State private var tourHabit = ""
+    @State private var tourHabitFocused = false
+    @State private var tourFillProgress: CGFloat = 0
+    /// The to-do the tour created, if any — kept so `commitTourHabit`
+    /// can tell "already saved" from "not saved yet" and never write
+    /// the same habit twice.
+    @State private var tourHabitTaskID: UUID?
     #endif
 
     // History is one page again — day streak, "this week"'s single
@@ -941,6 +968,26 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showingHistoryDaySheet) {
             historyDaySheet
+        }
+        // First launch only. A cover, not a sheet: the tour owns the
+        // whole screen (page 3's fill runs edge to edge) and isn't
+        // something to swipe away half-read — leaving is the × or
+        // running it to the end.
+        .fullScreenCover(isPresented: $showingTour) {
+            tourView
+        }
+        .onAppear {
+            // `tourEnabledOnLaunch` gates ONLY the automatic show —
+            // "replay tour" under test stuff still opens it directly
+            // regardless, so it stays reachable for testing while
+            // real TestFlight users don't see it yet. Flip this back
+            // on when it's ready to ship: every existing install
+            // still has `hasSeenTour == false` (it was never set,
+            // since this branch never ran), so they'll all get it
+            // exactly once on their next launch after that — the same
+            // "shown once" guarantee a brand new install gets, just
+            // delayed to whenever you turn it on.
+            if tourEnabledOnLaunch, !hasSeenTour { showingTour = true }
         }
         #endif
     }
@@ -1828,7 +1875,7 @@ struct ContentView: View {
         // Delete button sits OUTSIDE the field's own ZStack, in an
         // HStack alongside it — the field keeps `.frame(maxWidth:
         // .infinity)` but now shares the row's width with a fixed-size
-        // trailing "−" instead of claiming all of it, so the field's
+        // trailing "×" instead of claiming all of it, so the field's
         // own right-aligned text ends up snug against the button
         // rather than the row's outer edge.
         return HStack(spacing: 6) {
@@ -1837,7 +1884,7 @@ struct ContentView: View {
             Button {
                 deleteTodoTask(task)
             } label: {
-                Text("−")
+                Text("×")
                     .font(textFont())
                     .foregroundStyle(fillNavy)
             }
@@ -1865,7 +1912,7 @@ struct ContentView: View {
                 } label: {
                     toggleIcon(filled: enabled)
                 }
-                Text("to do")
+                Text("todo")
             }
             .frame(height: todoRowHeight)
             .foregroundStyle(enabled ? fillNavy : greyText)
@@ -1878,7 +1925,7 @@ struct ContentView: View {
 
                     if focusedTodo == nil {
                         Button { startAddingTodo() } label: {
-                            Text("+ add to do")
+                            Text("+ add todo")
                                 .foregroundStyle(greyText)
                                 .frame(height: todoRowHeight)
                         }
@@ -1939,29 +1986,37 @@ struct ContentView: View {
     // through. To-do comes first and brings its own column of entries
     // (see `todoSection`); the rest are single rows with a goal.
     //
-    // "Tap elsewhere to finish editing" is deliberately NOT one
-    // blanket .onTapGesture over the whole list — that was tried and
-    // broke the fields themselves: a SwiftUI tap gesture on an
-    // ancestor still fires when the touch lands on a descendant
-    // TextField (the field grabs UIKit focus on its own separate
-    // recognizer), so the ancestor's dismiss raced the field's own
-    // focus grab. Instead: (1) every OTHER row's button action clears
-    // focus explicitly, and (2) a tap-catcher on the empty space
-    // BELOW the last row only, never overlapping a field's own rect.
+    // "Tap elsewhere to finish editing" is deliberately NOT a
+    // Color.clear laid down as one broad layer BEHIND everything
+    // either — that was tried (a ZStack with the real content
+    // layered on top as a "sibling") on the theory that a sibling,
+    // unlike an ancestor, wouldn't compete with a descendant
+    // TextField's own tap handling. Tested wrong: tapping from one
+    // to-do straight into another stopped working — direct evidence
+    // that SwiftUI's tap recognizer for a broad background view CAN
+    // still intercept a touch that lands on a same-region UIKit field
+    // sitting "on top" of it, same underlying class of interference
+    // as the documented ancestor case, just less obviously so. Lesson
+    // repeated from elsewhere in this file: don't reason about
+    // SwiftUI/UIKit touch routing from a mental model, verify it.
+    //
+    // So instead: NO view's geometry ever overlaps a to-do field's.
+    // (1) every OTHER row's own button action clears focus
+    // explicitly, (2) `sectionGapCatcher` fills the small gaps
+    // BETWEEN sections (VStack lays out non-overlapping bands, so
+    // these truly never touch a field's rect), and (3) a catcher on
+    // the empty space below the last row.
     @ViewBuilder
     private var todosPageRows: some View {
-        // `trackerSectionGap` here, not 0 — spacing between these FIVE
-        // top-level children only (to-do / water / protein / coffee /
-        // carbs), so each tracker reads as its own block. Doesn't
-        // reach the individual to-do rows, which stay tight — those
-        // live inside `todoSection`'s own nested VStack (spacing 0),
-        // a separate scope this outer spacing never touches.
-        VStack(alignment: .leading, spacing: trackerSectionGap) {
+        VStack(alignment: .leading, spacing: 0) {
             todoSection
-
+            sectionGapCatcher
             trackerRow(.water)
+            sectionGapCatcher
             trackerRow(.protein)
+            sectionGapCatcher
             trackerRow(.coffee)
+            sectionGapCatcher
             trackerRow(.carbs)
 
             Color.clear
@@ -1969,6 +2024,18 @@ struct ContentView: View {
                 .contentShape(Rectangle())
                 .onTapGesture { focusedTodo = nil }
         }
+    }
+
+    /// One `trackerSectionGap`-tall strip, standing in for the VStack
+    /// `spacing` `todosPageRows` used to use — spacing alone is inert
+    /// (nothing to tap), so tapping in one of these gaps did nothing.
+    /// An explicit view here instead gives it something to catch that
+    /// tap with, still with zero geometric overlap with any row.
+    private var sectionGapCatcher: some View {
+        Color.clear
+            .frame(height: trackerSectionGap)
+            .contentShape(Rectangle())
+            .onTapGesture { focusedTodo = nil }
     }
 
     // home/settings/test stuff — sync status/reset plus the
@@ -1985,6 +2052,19 @@ struct ContentView: View {
             .frame(height: lineHeight)
         Button("remove test data") { store.removeDemoHistory() }
             .frame(height: lineHeight)
+
+        #if os(iOS)
+        // The first-run tour is, by definition, hard to get back to.
+        Button("replay tour") {
+            showingSettingsSheet = false
+            tourPage = .goal
+            tourHabit = ""
+            tourHabitTaskID = nil
+            tourFillProgress = 0
+            showingTour = true
+        }
+        .frame(height: lineHeight)
+        #endif
 
         // Separate from the two above — this wipes REAL history too,
         // not just seeded demo data, so it gets its own confirmation
@@ -2597,20 +2677,59 @@ struct ContentView: View {
     // native, per the reference video.
 
     #if os(iOS)
+    /// How loud a `glassCircleButton` is.
+    ///
+    /// `.regular` is the neutral glass Apple uses for chrome you look
+    /// past — back, close. It picks up light or dark from the system
+    /// on its own, which is exactly the behaviour we want and the
+    /// reason it isn't built out of our own palette.
+    ///
+    /// `.prominent` is the one action that moves you forward. Tinted
+    /// with `fillNavy`, so it's a dark glass circle with a light glyph
+    /// in light mode and inverts along with everything else in dark
+    /// mode — "the ink-colored button", the same way the rest of the
+    /// app treats fillNavy.
+    private enum GlassButtonWeight { case regular, prominent }
+
     // Native iOS 26 Liquid Glass, applied explicitly to a circle we
     // control — rather than the toolbar's OWN automatic glass chrome,
     // which we still suppress per-ToolbarItem via
     // .sharedBackgroundVisibility(.hidden) (see those call sites) so
     // it doesn't layer a second glass ring behind this one.
-    private func circleIconButton(systemName: String, action: @escaping () -> Void) -> some View {
+    //
+    // `.interactive()` is what gives it the press response — the
+    // glass flexes and re-lights under your finger instead of just
+    // dimming. Free, native, and the thing that makes it read as a
+    // real iOS 26 control rather than a circle with a blur behind it.
+    private func glassCircleButton(
+        systemName: String,
+        weight: GlassButtonWeight = .regular,
+        // 44 = Apple's minimum comfortable tap target, and what the
+        // Liquid Glass circles in the reference screenshots measure
+        // out to. Every back/close in the app is this size; only the
+        // tour's "next" goes bigger, because it's the one thing on
+        // the page you're meant to reach for.
+        diameter: CGFloat = 44,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 14 * fontScale, weight: .semibold))
-                .foregroundStyle(fillNavy)
-                .frame(width: 30, height: 30)
-                .glassEffect(.regular, in: .circle)
+                .font(.system(size: diameter * 0.44, weight: .medium))
+                .foregroundStyle(weight == .prominent ? pageBG : fillNavy)
+                .frame(width: diameter, height: diameter)
+                .glassEffect(
+                    weight == .prominent
+                        ? .regular.tint(fillNavy).interactive()
+                        : .regular.interactive(),
+                    in: .circle
+                )
         }
         .buttonStyle(.plain)
+    }
+
+    /// The toolbar-sized one every sheet's back/close uses.
+    private func circleIconButton(systemName: String, action: @escaping () -> Void) -> some View {
+        glassCircleButton(systemName: systemName, action: action)
     }
 
     private func settingsSheetTitle(_ title: String) -> some ToolbarContent {
@@ -2771,8 +2890,13 @@ struct ContentView: View {
     // just switches the tracker back off — the row returns to its
     // greyed-out "add" state and any history it already has stays
     // intact underneath.
-    private func goalSheet(for kind: TrackerKind) -> some View {
-        let isOn = store.isTrackerEnabled(kind)
+    /// `allowDelete: false` is the first-run tour's variant — the
+    /// tour is where you SET your first goal, so offering to delete
+    /// the tracker in the same breath makes no sense, and the design
+    /// for it shows a single centered "save". Everywhere else keeps
+    /// the normal delete/save pair.
+    private func goalSheet(for kind: TrackerKind, allowDelete: Bool = true) -> some View {
+        let isOn = store.isTrackerEnabled(kind) && allowDelete
         return NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
                 Spacer(minLength: 0)
@@ -2804,13 +2928,20 @@ struct ContentView: View {
                         Button("save") {
                             commitGoal(pendingGoal, for: kind)
                             goalSheetKind = nil
+                            tourGoalKind = nil
                         }
                     } else {
                         Spacer()
-                        Button("add") {
+                        // "save" (not "add") when the tracker is
+                        // already on and we're only hiding delete —
+                        // that's the tour. Toggling would switch a
+                        // live tracker OFF, the opposite of the point.
+                        let alreadyOn = store.isTrackerEnabled(kind)
+                        Button(alreadyOn ? "save" : "add") {
                             commitGoal(pendingGoal, for: kind)
-                            store.toggleTracker(kind)
+                            if !alreadyOn { store.toggleTracker(kind) }
                             goalSheetKind = nil
+                            tourGoalKind = nil
                         }
                         Spacer()
                     }
@@ -2826,13 +2957,346 @@ struct ContentView: View {
             .toolbar {
                 settingsSheetTitle(kind.label)
                 ToolbarItem(placement: .topBarTrailing) {
-                    circleIconButton(systemName: "xmark") { goalSheetKind = nil }
+                    circleIconButton(systemName: "xmark") {
+                        goalSheetKind = nil
+                        tourGoalKind = nil
+                    }
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
         }
         .presentationDetents([.medium])
         .presentationDragIndicator(.visible)
+    }
+
+    // MARK: - First-run tour
+    //
+    // Five pages, shown once on a fresh install. The first two ASK
+    // FOR REAL INPUT rather than just describing things — you set
+    // your water goal and name your first habit, so by the time the
+    // tour ends the app is already yours and already usable. (That's
+    // also why a fresh install no longer ships sample to-dos; see
+    // `TodoTask.defaults`.) The last three explain what the app does
+    // with that, using the app's own components so they can't drift
+    // out of sync with the real thing.
+    //
+    // iOS only: the designs are phone-shaped, and the macOS build is
+    // a 340x640 menu bar popover with nowhere to put this.
+
+    private enum TourPage: Int, CaseIterable {
+        case goal, habit, fill, streak, simple
+
+        var next: TourPage? { TourPage(rawValue: rawValue + 1) }
+        var isLast: Bool { next == nil }
+    }
+
+    /// Where the blue comes to rest on the `fill` page — chosen so it
+    /// cuts straight THROUGH the big numbers, which is the whole
+    /// point of that page: you watch it rise and stop mid-text, and
+    /// the two-tone mask that makes the home screen readable at any
+    /// level is suddenly obvious.
+    private let tourFillRestingLevel: CGFloat = 0.73
+
+    private func advanceTour() {
+        // Drop the keyboard before the slide — animating a focused
+        // field sideways is visibly janky, and the habit is already
+        // committed below either way.
+        tourHabitFocused = false
+        commitTourHabit()
+
+        guard let next = tourPage.next else {
+            finishTour()
+            return
+        }
+        withAnimation(.easeInOut(duration: 0.35)) {
+            tourPage = next
+        }
+    }
+
+    /// Writes whatever's been typed on the habit page into the real
+    /// list — idempotent, so advancing past it (or closing the tour
+    /// from a later page) can't create the same to-do twice.
+    private func commitTourHabit() {
+        let name = tourHabit.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, tourHabitTaskID == nil else { return }
+        let id = store.insertBlankTodoTask()
+        store.setTodoTaskName(id: id, to: name)
+        tourHabitTaskID = id
+    }
+
+    private func finishTour() {
+        commitTourHabit()
+        tourHabitFocused = false
+        hasSeenTour = true
+        showingTour = false
+    }
+
+    // The whole tour: one sliding layer with the pages, one fixed
+    // layer with the buttons. The buttons deliberately sit OUTSIDE
+    // the transition so they stay nailed in place while everything
+    // behind them slides — pressing "next" shouldn't make the thing
+    // you just pressed fly off the screen.
+    private var tourView: some View {
+        ZStack(alignment: .topLeading) {
+            pageBG.ignoresSafeArea()
+
+            Group {
+                switch tourPage {
+                case .goal: tourGoalPage
+                case .habit: tourHabitPage
+                case .fill: tourFillPage
+                case .streak: tourStreakPage
+                case .simple: tourSimplePage
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            // New page in from the right, old one out to the left —
+            // `.id` is what makes SwiftUI treat a page change as a
+            // replacement (and so run the transition) rather than an
+            // in-place update of the same view.
+            .id(tourPage)
+            .transition(.asymmetric(
+                insertion: .move(edge: .trailing),
+                removal: .move(edge: .leading)
+            ))
+
+            tourChrome
+        }
+        .font(textFont())
+        .foregroundStyle(fillNavy)
+        .buttonStyle(.plain)
+        .sheet(item: $tourGoalKind) { kind in
+            // Its own binding, not the shared `goalSheetKind`: that
+            // one's `.sheet` hangs off the root view, which is BEHIND
+            // this full-screen cover and can't present over it.
+            goalSheet(for: kind, allowDelete: false)
+        }
+    }
+
+    private var tourChrome: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                glassCircleButton(systemName: "xmark") { finishTour() }
+            }
+            Spacer()
+            HStack {
+                Spacer()
+                glassCircleButton(
+                    systemName: tourPage.isLast ? "checkmark" : "chevron.right",
+                    weight: .prominent,
+                    diameter: 52
+                ) { advanceTour() }
+            }
+        }
+        .padding(.horizontal, sideInset)
+        .padding(.vertical, 24)
+    }
+
+    /// Shared page shape: heading pinned top-left, whatever the page
+    /// is about in the middle, a line of copy bottom-left. Trailing
+    /// padding on the copy keeps it clear of the "next" button, which
+    /// floats over every page in the same spot.
+    private func tourScaffold<Content: View>(
+        heading: String? = nil,
+        caption: String? = nil,
+        captionIsHint: Bool = false,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if let heading {
+                Text(heading)
+                    .font(textFont(34))
+                    .underline()
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 0)
+            content()
+            Spacer(minLength: 0)
+
+            if let caption {
+                Text(caption)
+                    .font(textFont())
+                    .underline(!captionIsHint)
+                    .foregroundStyle(captionIsHint ? greyText : fillNavy)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.trailing, 80)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.horizontal, sideInset)
+        .padding(.top, 56)
+        .padding(.bottom, 96)
+    }
+
+    // Page 1 — set a real goal. The row is deliberately the same
+    // shape as the one on the trackers page, so finding it there
+    // later is recognition rather than discovery. Only the number is
+    // tappable: the on/off icon is inert here, since switching water
+    // OFF in the middle of "let's track your water" would be a
+    // strange thing to let happen by accident.
+    private var tourGoalPage: some View {
+        tourScaffold(
+            heading: "shall we start tracking your water?",
+            caption: "tap the number to change how much you're aiming for...",
+            captionIsHint: true
+        ) {
+            HStack {
+                HStack(spacing: 8) {
+                    toggleIcon(filled: true)
+                    Text("water")
+                }
+                Spacer()
+                Button {
+                    pendingGoal = snappedGoal(store.data.goalML, for: .water)
+                    tourGoalKind = .water
+                } label: {
+                    goalInputBorder {
+                        Text("\(Self.formatAmount(store.data.goalML)) \(TrackerKind.water.unit)")
+                    }
+                }
+            }
+            .frame(height: lineHeight + 8)
+        }
+    }
+
+    // Page 2 — name a real habit. Same field and same rotating,
+    // typed-out suggestions as the trackers page, just left-aligned
+    // (there's no label column to hang off here) and focused on
+    // arrival, so the keyboard is already up and you can just type.
+    private var tourHabitPage: some View {
+        tourScaffold(heading: "which habit would you like to add?") {
+            ZStack(alignment: .leading) {
+                if tourHabit.isEmpty {
+                    TypingSuggestion(suggestions: Self.todoSuggestions, color: greyText)
+                        .allowsHitTesting(false)
+                }
+                TodoTextField(
+                    text: $tourHabit,
+                    isFocused: tourHabitFocused,
+                    textColor: UIColor(fillNavy),
+                    font: UIFont(name: "GoogleSansCode-Medium", size: bodyTextSize * fontScale),
+                    alignment: .left,
+                    onFocusChange: { tourHabitFocused = $0 },
+                    onSubmit: { advanceTour() },
+                    onBackspaceWhenEmpty: {}
+                )
+                .frame(height: lineHeight)
+            }
+            .onAppear { tourHabitFocused = true }
+        }
+    }
+
+    // Page 3 — the home screen's one real trick, animated. The blue
+    // rises on arrival and stops mid-number, which is exactly when
+    // the two-tone mask becomes visible: dark where the fill hasn't
+    // reached, light where it has. Drawn with the SAME two-layer
+    // technique `numberStack` uses (see it for why), so what's shown
+    // here is what the app actually does.
+    //
+    // `.ignoresSafeArea()` on the whole stack, not just the color:
+    // the mask rectangle and the fill rectangle have to share one
+    // coordinate space or they drift apart, and that drift is
+    // precisely the bug this page is trying to show off.
+    private var tourFillPage: some View {
+        GeometryReader { geo in
+            let fillHeight = geo.size.height * tourFillProgress
+
+            let content = VStack(alignment: .leading, spacing: 0) {
+                Spacer(minLength: 0).frame(height: geo.size.height * 0.24)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("1 done")
+                    Text("3.000ml")
+                }
+                .font(numberFont(50))
+                .tracking(-2)
+
+                Spacer(minLength: 0)
+
+                Text("no motivation needed,\nyou can already do it,\nnow you actually will")
+                    .font(textFont())
+                    .underline()
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.trailing, 80)
+                Spacer(minLength: 0).frame(height: geo.size.height * 0.15)
+            }
+            .frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
+            .padding(.horizontal, sideInset)
+
+            ZStack(alignment: .topLeading) {
+                fillWater
+                    .frame(height: fillHeight)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+
+                content.foregroundStyle(fillNavy)
+                content
+                    .foregroundStyle(pageBG)
+                    .mask(
+                        Rectangle()
+                            .frame(height: fillHeight)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    )
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
+        }
+        .ignoresSafeArea()
+        .onAppear {
+            tourFillProgress = 0
+            withAnimation(.easeOut(duration: 1.4)) {
+                tourFillProgress = tourFillRestingLevel
+            }
+        }
+    }
+
+    // Page 4 — what History looks like once it has something to
+    // show, built from the real `historyMark` so the marks here and
+    // the marks there can never disagree. Static on purpose: a brand
+    // new user has no history, and "0 streak" would undersell it.
+    private var tourStreakPage: some View {
+        tourScaffold(caption: "trackers and todo's\ngive you the streak\nyou need") {
+            VStack(spacing: 12) {
+                ForEach(Array(Self.tourStreakRows.enumerated()), id: \.offset) { _, row in
+                    HStack(spacing: 0) {
+                        ForEach(Array(row.enumerated()), id: \.offset) { _, cell in
+                            historyMark(showDot: cell.dot, color: cell.color)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// The three rows page 4 draws — a run that starts plain, then
+    /// crosses the 10-day line mid-row and turns green from there,
+    /// which is the one rule about History worth showing rather than
+    /// explaining.
+    private static var tourStreakRows: [[(dot: Bool, color: Color)]] {
+        let today = historyTodayColor, navy = fillNavy, green = historyMilestone10
+        return [
+            [(false, today), (true, navy), (false, navy), (true, navy), (false, navy), (false, navy)],
+            [(true, navy), (true, navy), (false, navy), (false, navy), (true, green), (true, green)],
+            Array(repeating: (dot: true, color: green), count: 6),
+        ]
+    }
+
+    // Page 5 — the sign-off.
+    private var tourSimplePage: some View {
+        tourScaffold(caption: "you focus,\nwe keep it simple") {
+            VStack(spacing: 28) {
+                Text("100%")
+                    .font(numberFont(44))
+                    .tracking(-2)
+                    .foregroundStyle(pageBG)
+                    .frame(width: 172, height: 172)
+                    .background(fillNavy, in: .circle)
+
+                Rectangle()
+                    .fill(fillNavy)
+                    .frame(width: 210, height: 24)
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
     }
     #endif
 }

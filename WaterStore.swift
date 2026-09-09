@@ -93,12 +93,12 @@ struct TodoTask: Codable, Identifiable, Hashable {
         self.name = name
     }
 
-    /// What a fresh install starts with.
-    static let defaults: [TodoTask] = [
-        TodoTask(name: "Leg day"),
-        TodoTask(name: "10pg read"),
-        TodoTask(name: "45m sport"),
-    ]
+    /// What a fresh install starts with: NOTHING. There used to be
+    /// three sample to-dos here ("Leg day", "10pg read", "45m
+    /// sport"), but the first-run tour now asks for one habit in your
+    /// own words and creates it — samples on top of that would mean
+    /// starting at four to-dos, only one of which you chose.
+    static let defaults: [TodoTask] = []
 }
 
 /// A row in the to-do checklist. Plain items are tapped by hand like
@@ -136,7 +136,7 @@ enum TrackerKind: String, Codable, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .todo: "to do"
+        case .todo: "todo"
         case .water: "water"
         case .protein: "protein"
         case .coffee: "coffee"
