@@ -82,13 +82,22 @@ private let pageBG = Color.adaptive(
     light: Color(red: 0xCE / 255, green: 0xCE / 255, blue: 0xCE / 255),   // #CECECE
     dark: Color(red: 0x1C / 255, green: 0x1C / 255, blue: 0x1E / 255)     // #1C1C1E
 )
-// Sheet/settings-page chrome background — plain white in light mode,
-// so its dark counterpart goes to the opposite extreme too: darker
-// than `pageBG`'s dark value, same relationship as light mode (white
-// sheet vs. mid-grey fill) just mirrored.
+// Sheet/settings-page chrome background — plain white in light mode.
+// Its dark counterpart sits a step LIGHTER than `pageBG`'s dark
+// value, which keeps the same relationship light mode has (the sheet
+// reads as a lighter card lifted off the page fill behind it) instead
+// of sinking into near-black.
 private let sheetBG = Color.adaptive(
     light: .white,
-    dark: Color(red: 0x0A / 255, green: 0x0A / 255, blue: 0x0B / 255)     // #0A0A0B
+    dark: Color(red: 0x26 / 255, green: 0x26 / 255, blue: 0x2A / 255)     // #26262A
+)
+// "all logs" row cards specifically — was reusing `pageBG`, which
+// reads a little too dark/flat as a card sitting ON TOP of that same
+// `pageBG` page background (no separation between the two). A step
+// lighter in light mode, a step lighter in dark mode too.
+private let logRowBG = Color.adaptive(
+    light: Color(red: 0xF4 / 255, green: 0xF4 / 255, blue: 0xF7 / 255),   // #F4F4F7
+    dark: Color(red: 0x39 / 255, green: 0x39 / 255, blue: 0x3E / 255)     // #39393E
 )
 private let fillNavy = Color.adaptive(
     light: Color(red: 0x1E / 255, green: 0x1E / 255, blue: 0x1E / 255),   // #1E1E1E
@@ -114,14 +123,57 @@ private let fillCarbs = Color.adaptive(
     light: Color(red: 0xFF / 255, green: 0xB3 / 255, blue: 0x00 / 255),   // #FFB300
     dark: Color(red: 0xFF / 255, green: 0xC2 / 255, blue: 0x33 / 255)     // #FFC233
 )
+private let fillSteps = Color.adaptive(
+    light: Color(red: 0x00 / 255, green: 0x7A / 255, blue: 0x33 / 255),   // #007A33
+    dark: Color(red: 0x12 / 255, green: 0xD9 / 255, blue: 0x65 / 255)     // #12D965
+)
+private let fillMovement = Color.adaptive(
+    light: Color(red: 0xFF / 255, green: 0x6B / 255, blue: 0x35 / 255),   // #FF6B35
+    dark: Color(red: 0xFF / 255, green: 0x8B / 255, blue: 0x5E / 255)     // #FF8B5E
+)
+private let fillSleep = Color.adaptive(
+    light: Color(red: 0x5B / 255, green: 0x5F / 255, blue: 0xEF / 255),   // #5B5FEF
+    dark: Color(red: 0x7B / 255, green: 0x7F / 255, blue: 0xFF / 255)     // #7B7FFF
+)
+// Only shown in .min mode (rare for this tracker — see GoalMode) since
+// .max mode replaces it entirely with the green/red scheme below. A
+// muted smoke grey, distinct from every other tracker color.
+private let fillCigarettes = Color.adaptive(
+    light: Color(red: 0x5C / 255, green: 0x66 / 255, blue: 0x70 / 255),   // #5C6670
+    dark: Color(red: 0x9B / 255, green: 0xA5 / 255, blue: 0xAF / 255)     // #9BA5AF
+)
 // Celebration color once ALL of today's to-dos are done — overrides
 // whichever per-tracker color would normally show, on every tab. The
 // light value is dark/muted enough that it would nearly disappear
 // against a near-black dark background, so its dark counterpart is a
-// substantially brighter teal, not just a tint adjustment.
+// substantially brighter green, not just a tint adjustment.
 private let fillAccent = Color.adaptive(
-    light: Color(red: 0x00 / 255, green: 0x67 / 255, blue: 0x52 / 255),   // #006752
-    dark: Color(red: 0x17 / 255, green: 0xB9 / 255, blue: 0x8F / 255)     // #17B98F
+    light: Color(red: 0x00 / 255, green: 0x7A / 255, blue: 0x33 / 255),   // #007A33
+    dark: Color(red: 0x12 / 255, green: 0xD9 / 255, blue: 0x65 / 255)     // #12D965
+)
+
+// MARK: - Max-mode (goal-is-a-ceiling) green/red scheme
+//
+// For a tracker in .max mode (coffee/calories/cigarettes — see
+// GoalMode), the usual "fill rises toward a goal" metaphor reads
+// backwards: filling up looks like progress, but for a max you're
+// trying to STAY UNDER, more filled is worse. So instead the home
+// screen ALWAYS opens on this scheme while that tracker is active —
+// not just once something's logged: a medium green #4FB06F page
+// background with a darker green #007A33 fill block on top (reusing
+// fillAccent's own light value — same "good" green as the fully-done
+// celebration color) — collapsing to one flat dark red covering
+// background AND fill with no visible fill line once you go over.
+// Deliberately separate from `pageBG` — that constant is shared by
+// many other, unrelated pages and must stay untouched; only the home
+// screen's own background layer becomes mode-aware.
+private let maxModeSafeBG = Color.adaptive(
+    light: Color(red: 0x4F / 255, green: 0xB0 / 255, blue: 0x6F / 255),   // #4FB06F
+    dark: Color(red: 0x14 / 255, green: 0x3D / 255, blue: 0x27 / 255)     // #143D27
+)
+private let maxModeOverColor = Color.adaptive(
+    light: Color(red: 0xA8 / 255, green: 0x2F / 255, blue: 0x31 / 255),   // #A82F31
+    dark: Color(red: 0xA8 / 255, green: 0x2F / 255, blue: 0x31 / 255)     // #A82F31
 )
 
 // History's streak-length milestone colors — separate from fillAccent
@@ -130,8 +182,8 @@ private let fillAccent = Color.adaptive(
 // is whichever of these its total length qualifies for, applied to
 // the WHOLE run (see `historyDayTiers`), highest tier wins.
 private let historyMilestone10 = Color.adaptive(
-    light: Color(red: 0x37 / 255, green: 0xA8 / 255, blue: 0x2F / 255),   // #37A82F
-    dark: Color(red: 0x4C / 255, green: 0xC7 / 255, blue: 0x44 / 255)     // #4CC744
+    light: Color(red: 0x00 / 255, green: 0x7A / 255, blue: 0x33 / 255),   // #007A33
+    dark: Color(red: 0x12 / 255, green: 0xD9 / 255, blue: 0x65 / 255)     // #12D965
 )
 private let historyMilestone35 = Color.adaptive(
     light: Color(red: 0xCC / 255, green: 0x47 / 255, blue: 0xDB / 255),   // #CC47DB
@@ -691,22 +743,82 @@ struct ContentView: View {
         case .protein: store.proteinProgress
         case .coffee: store.coffeeProgress
         case .carbs: store.carbsProgress
+        case .steps: store.stepsProgress
+        case .movement: store.movementProgress
+        case .sleep: store.sleepProgress
+        case .cigarettes: store.cigarettesProgress
         }
     }
 
+    // True while the active tab is one of the trackers whose goal can
+    // mean "stay under this" rather than "reach this" (coffee/
+    // calories/cigarettes — see GoalMode) AND that switch is
+    // currently set to .max. Drives both `fillColor` and the home
+    // screen's background: green while at/under the max, flat red
+    // once over — see the MARK above the max-mode colors for why.
+    private var isActiveMetricMaxMode: Bool {
+        activeMetric.supportsGoalModeSwitch && store.goalMode(for: activeMetric) == .max
+    }
+
+    private var isActiveMetricOverMax: Bool {
+        isActiveMetricMaxMode && currentProgress > 1.0
+    }
+
+    // Only the safe/green state breathes — once you're over the max
+    // and the screen has gone flat red, a pulse would read as a
+    // second "warning" signal fighting the red itself, so it stops.
+    private var showsMaxModePulse: Bool {
+        isActiveMetricMaxMode && !isActiveMetricOverMax
+    }
+
+    // `numberStack`/`mainMenu` mirror every number/label twice — once
+    // in `fillNavy`, once in this color masked to just the fill
+    // rectangle — so text stays readable whether it's sitting over
+    // the background or over the fill. `pageBG` is the right masked
+    // color for every OTHER tracker (their fills are bright/saturated
+    // enough that pageBG's near-black dark-mode value still reads
+    // fine on top), but the max-mode green/red fills are much lower-
+    // luminance — dark-mode pageBG text on top of them was reading as
+    // barely-visible dark-on-dark. Plain white instead, only while a
+    // max-mode tracker is active.
+    private var fillTextColor: Color {
+        isActiveMetricMaxMode ? .white : pageBG
+    }
+
     // Per-tracker color while tracking (water blue, protein red,
-    // coffee brown, carbs amber) — EXCEPT once all of today's to-dos
-    // are done, which overrides every tab to the green celebration
-    // color regardless of which one is active.
+    // coffee brown, carbs amber, steps green, movement orange, sleep
+    // indigo) — EXCEPT once all of today's to-dos are done, which
+    // overrides every tab to the green celebration color regardless
+    // of which one is active.
     private var fillColor: Color {
+        // Max-mode green/red overrides everything else, including the
+        // all-done celebration color below — see the max-mode MARK.
+        if isActiveMetricMaxMode {
+            return isActiveMetricOverMax ? maxModeOverColor : fillAccent
+        }
         guard store.todoProgress < 1.0 else { return fillAccent }
         switch activeMetric {
         case .water: return fillWater
         case .protein: return fillProtein
         case .coffee: return fillCoffee
         case .carbs: return fillCarbs
+        case .steps: return fillSteps
+        case .movement: return fillMovement
+        case .sleep: return fillSleep
+        case .cigarettes: return fillCigarettes
         case .todo: return fillNavy
         }
+    }
+
+    // The home screen's own background layer — plain `pageBG`
+    // normally, but swapped to the max-mode green/red scheme while
+    // the active tracker is in max mode (see the max-mode MARK).
+    // Deliberately scoped to just this one call site rather than
+    // touching `pageBG` itself, which many other unrelated pages
+    // still use unconditionally.
+    private var homeScreenBG: Color {
+        guard isActiveMetricMaxMode else { return pageBG }
+        return isActiveMetricOverMax ? maxModeOverColor : maxModeSafeBG
     }
 
     // Shared by both platforms: settings pushes into these via
@@ -724,6 +836,7 @@ struct ContentView: View {
     // stuff" (sync status/reset + the DEBUG-only seed/wipe buttons).
     private enum SettingsDestination: Hashable {
         case todos
+        case allLogs
         case testStuff
         var title: String {
             switch self {
@@ -731,6 +844,7 @@ struct ContentView: View {
             // other tracker's on/off + goal, so it's named after the
             // whole page rather than just its first section.
             case .todos: "trackers"
+            case .allLogs: "all logs"
             case .testStuff: "test stuff"
             }
         }
@@ -751,6 +865,12 @@ struct ContentView: View {
     // wheel-picker sheet for that tracker — nil while none is open.
     @State private var goalSheetKind: TrackerKind?
     @State private var pendingGoal = 0
+    // Staged min/max choice for the goal sheet's Calendar-style pill
+    // switch (coffee/calories/cigarettes only — see
+    // `TrackerKind.supportsGoalModeSwitch`); seeded from the store in
+    // `openGoalSheet` and committed alongside `pendingGoal` when the
+    // sheet's checkmark/save is tapped.
+    @State private var pendingGoalMode: GoalMode = .min
     @State private var historySheetDate: Date = .now
 
     // First-run tour. `hasSeenTour` is @AppStorage — i.e. plain
@@ -1003,8 +1123,35 @@ struct ContentView: View {
             // reports as the safe-area-constrained size, so the
             // numbers/menu never end up hidden behind the dynamic
             // island.
-            pageBG
+            homeScreenBG
                 .ignoresSafeArea()
+
+            // Breathing highlight for the max-mode "safe" (green)
+            // state — a plain white wash whose opacity oscillates
+            // between 0 and a low ceiling, lightening/darkening the
+            // green underneath it rather than swapping in a second
+            // flat color. Driven by `TimelineView(.animation)` (system
+            // time in, opacity out) rather than a `@State` flag toggled
+            // once inside a `repeatForever` animation — that first cut
+            // LOOKED right but silently stalled after a few seconds:
+            // `store.tick()` (a periodic, unrelated `objectWillChange`
+            // used to notice midnight rollovers / pull CloudKit) forces
+            // this whole view to re-evaluate outside of any animation
+            // transaction, and a `repeatForever` loop doesn't reliably
+            // survive that kind of external interruption. A
+            // `TimelineView` has no persistent animation state to lose
+            // — every tick it just re-reads the clock — so it can't be
+            // knocked out of rhythm by an unrelated re-render.
+            TimelineView(.animation) { timeline in
+                let period = 3.2
+                let t = timeline.date.timeIntervalSinceReferenceDate
+                    .truncatingRemainder(dividingBy: period)
+                let phase = (sin(2 * Double.pi * t / period) + 1) / 2   // 0...1
+                Color.white
+                    .opacity(showsMaxModePulse ? phase * 0.16 : 0)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+            }
 
             // A nested GeometryReader with .ignoresSafeArea() applied
             // TO IT directly reports the TRUE full-screen size in
@@ -1020,7 +1167,26 @@ struct ContentView: View {
             // real fill edge. Sharing this one `fullGeo.size.height`
             // for both is what guarantees they can't disagree.
             GeometryReader { fullGeo in
-                let fillHeight = fullGeo.size.height * currentProgress
+                // Capped at the screen's own height — max-mode trackers
+                // (see GoalMode) let `currentProgress` run past 100%
+                // with NO ceiling (260%, 900%, however far over you've
+                // logged), and letting that uncapped value flow
+                // straight into `fillColor`'s `.frame(height:)` and the
+                // masks below reproduces the EXACT class of bug the
+                // `Color.clear` anchor just below was already added to
+                // fix once (see its comment): a genuinely oversized
+                // child throws off this ZStack's own bottom-alignment
+                // math, and `bottomMenu` — also bottom-aligned, in the
+                // very same ZStack — was observed rendering with all
+                // but its first row pushed below the visible screen
+                // once a max-mode tracker went far enough over.
+                // Confirmed empirically: capping at 1.5x the screen's
+                // height still reproduced it, capping at exactly 1x
+                // (this container can never legitimately need MORE
+                // than its own height to read as "fully covered, no
+                // visible seam" — the whole point of letting
+                // `currentProgress` itself run uncapped) does not.
+                let fillHeight = min(fullGeo.size.height * currentProgress, fullGeo.size.height)
 
                 ZStack(alignment: .bottom) {
                     // Invisible, always-full-size anchor. Without this,
@@ -1101,6 +1267,18 @@ struct ContentView: View {
         case .carbs:
             let pct = Int(store.carbsProgress * 100)
             return ("\(Self.formatAmount(store.todayCarbsTotal)) gr", "\(Self.formatAmount(store.data.carbsGoalG))(\(pct)%)")
+        case .steps:
+            let pct = Int(store.stepsProgress * 100)
+            return ("\(Self.formatAmount(store.todayStepsTotal))", "\(Self.formatAmount(store.data.stepsGoal))(\(pct)%)")
+        case .movement:
+            let pct = Int(store.movementProgress * 100)
+            return ("\(Self.formatAmount(store.todayMovementTotal)) min", "\(Self.formatAmount(store.data.movementGoalMin))(\(pct)%)")
+        case .sleep:
+            let pct = Int(store.sleepProgress * 100)
+            return ("\(Self.formatAmount(store.todaySleepTotal)) hr", "\(Self.formatAmount(store.data.sleepGoalHr))(\(pct)%)")
+        case .cigarettes:
+            let pct = Int(store.cigarettesProgress * 100)
+            return ("\(Self.formatAmount(store.todayCigarettesTotal))", "\(Self.formatAmount(store.data.cigarettesGoal))(\(pct)%)")
         }
     }
 
@@ -1131,7 +1309,10 @@ struct ContentView: View {
         let dimmedOpacity: Double = todoComplete ? 0.5 : 1
 
         return GeometryReader { fullGeo in
-            let fillHeight = fullGeo.size.height * currentProgress
+            // Same cap as `homeScreen`'s own `fillHeight` — see its
+            // comment; this mask is independently computed but
+            // vulnerable to the identical oversized-child issue.
+            let fillHeight = min(fullGeo.size.height * currentProgress, fullGeo.size.height)
 
             let content = VStack(alignment: .leading, spacing: 0) {
                 ForEach(enabledTrackers) { kind in
@@ -1168,8 +1349,13 @@ struct ContentView: View {
             // dark text reads fine over it at any height, so the
             // whole point of the light/dark mirror (matching whatever
             // color the fill happens to be at each pixel) doesn't
-            // apply — skip it and just go flat #1E1E1E.
-            if todoComplete {
+            // apply — skip it and just go flat #1E1E1E. Not while a
+            // max-mode tracker is active, though: `fillColor` ignores
+            // `todoComplete` entirely there (green/red always wins —
+            // see `fillColor`), so this shortcut's flat-green
+            // assumption would be wrong; fall through to the masked
+            // version, which already has the right colors for that.
+            if todoComplete, !isActiveMetricMaxMode {
                 content
                     .foregroundStyle(fillNavy)
             } else {
@@ -1177,7 +1363,7 @@ struct ContentView: View {
                     content
                         .foregroundStyle(fillNavy)
                     content
-                        .foregroundStyle(pageBG)
+                        .foregroundStyle(fillTextColor)
                         .mask(
                             Rectangle()
                                 .frame(width: fullGeo.size.width, height: fillHeight)
@@ -1252,7 +1438,7 @@ struct ContentView: View {
                         }
                         .frame(height: lineHeight)
                     }
-                case .water, .protein, .coffee, .carbs:
+                case .water, .protein, .coffee, .carbs, .steps, .movement, .sleep, .cigarettes:
                     ForEach(activeMetric.presets, id: \.self) { amount in
                         Button("+\(amount)") {
                             switch activeMetric {
@@ -1260,6 +1446,10 @@ struct ContentView: View {
                             case .protein: store.addProtein(amount)
                             case .coffee: store.addCoffee(amount)
                             case .carbs: store.addCarbs(amount)
+                            case .steps: store.addSteps(amount)
+                            case .movement: store.addMovement(amount)
+                            case .sleep: store.addSleep(amount)
+                            case .cigarettes: store.addCigarettes(amount)
                             case .todo: break
                             }
                         }
@@ -1296,7 +1486,7 @@ struct ContentView: View {
             mainMenuRows
                 .foregroundStyle(fillNavy)
             mainMenuRows
-                .foregroundStyle(pageBG)
+                .foregroundStyle(fillTextColor)
                 .mask(
                     Rectangle()
                         .frame(height: localFillHeight)
@@ -1327,17 +1517,26 @@ struct ContentView: View {
         switch kind {
         case .protein, .carbs: 5
         case .coffee: 1   // whole cups, not a continuous amount
+        case .steps: 500
+        case .movement: 5
+        case .sleep: 1   // whole hours
+        case .cigarettes: 1
         default: 100
         }
     }
 
     /// The wheel's full fixed range — water 0-5000ml, protein/carbs
-    /// 0-500g, coffee 0-10 cups.
+    /// 0-500g, coffee 0-10 cups, steps 0-30000, movement 0-180min,
+    /// sleep 0-16hr, cigarettes 0-60.
     private func pickerRange(for kind: TrackerKind) -> ClosedRange<Int> {
         switch kind {
         case .water: 0...5000
         case .protein, .carbs: 0...500
         case .coffee: 0...10
+        case .steps: 0...30000
+        case .movement: 0...180
+        case .sleep: 0...16
+        case .cigarettes: 0...60
         case .todo: 0...0
         }
     }
@@ -1348,6 +1547,10 @@ struct ContentView: View {
         case .protein: max(0, store.data.proteinGoalG - store.todayProteinTotal)
         case .coffee: max(0, store.data.coffeeGoal - store.todayCoffeeTotal)
         case .carbs: max(0, store.data.carbsGoalG - store.todayCarbsTotal)
+        case .steps: max(0, store.data.stepsGoal - store.todayStepsTotal)
+        case .movement: max(0, store.data.movementGoalMin - store.todayMovementTotal)
+        case .sleep: max(0, store.data.sleepGoalHr - store.todaySleepTotal)
+        case .cigarettes: max(0, store.data.cigarettesGoal - store.todayCigarettesTotal)
         case .todo: 0
         }
     }
@@ -1361,6 +1564,10 @@ struct ContentView: View {
         case .water: 100
         case .protein, .carbs: 10
         case .coffee: 1
+        case .steps: 500
+        case .movement: 5
+        case .sleep: 1
+        case .cigarettes: 1
         case .todo: 1
         }
     }
@@ -1371,6 +1578,10 @@ struct ContentView: View {
         case .protein: 20...400
         case .carbs: 20...600
         case .coffee: 1...15
+        case .steps: 1000...30000
+        case .movement: 5...180
+        case .sleep: 1...14
+        case .cigarettes: 1...40
         case .todo: 0...0
         }
     }
@@ -1464,6 +1675,10 @@ struct ContentView: View {
                 case .protein: store.addProtein(pendingAmount)
                 case .coffee: store.addCoffee(pendingAmount)
                 case .carbs: store.addCarbs(pendingAmount)
+                case .steps: store.addSteps(pendingAmount)
+                case .movement: store.addMovement(pendingAmount)
+                case .sleep: store.addSleep(pendingAmount)
+                case .cigarettes: store.addCigarettes(pendingAmount)
                 case .todo: break
                 }
                 dismissQuickAdd()
@@ -1566,6 +1781,22 @@ struct ContentView: View {
         Binding(get: { store.data.carbsGoalG }, set: { store.setCarbsGoal($0) })
     }
 
+    private var stepsGoalBinding: Binding<Int> {
+        Binding(get: { store.data.stepsGoal }, set: { store.setStepsGoal($0) })
+    }
+
+    private var movementGoalBinding: Binding<Int> {
+        Binding(get: { store.data.movementGoalMin }, set: { store.setMovementGoal($0) })
+    }
+
+    private var sleepGoalBinding: Binding<Int> {
+        Binding(get: { store.data.sleepGoalHr }, set: { store.setSleepGoal($0) })
+    }
+
+    private var cigarettesGoalBinding: Binding<Int> {
+        Binding(get: { store.data.cigarettesGoal }, set: { store.setCigarettesGoal($0) })
+    }
+
     // Shared row layout for the to-do's/trackers page — no more grey
     // background (removed per redesign), just the shared height every
     // row (to-do, tracker, add) needs to line up consistently. NO
@@ -1612,6 +1843,10 @@ struct ContentView: View {
         case .protein: store.data.proteinGoalG
         case .coffee: store.data.coffeeGoal
         case .carbs: store.data.carbsGoalG
+        case .steps: store.data.stepsGoal
+        case .movement: store.data.movementGoalMin
+        case .sleep: store.data.sleepGoalHr
+        case .cigarettes: store.data.cigarettesGoal
         case .todo: 0
         }
     }
@@ -1622,6 +1857,10 @@ struct ContentView: View {
         case .protein: proteinGoalBinding
         case .coffee: coffeeGoalBinding
         case .carbs: carbsGoalBinding
+        case .steps: stepsGoalBinding
+        case .movement: movementGoalBinding
+        case .sleep: sleepGoalBinding
+        case .cigarettes: cigarettesGoalBinding
         case .todo: .constant(0)
         }
     }
@@ -1632,6 +1871,10 @@ struct ContentView: View {
         case .protein: store.setProteinGoal(value)
         case .coffee: store.setCoffeeGoal(value)
         case .carbs: store.setCarbsGoal(value)
+        case .steps: store.setStepsGoal(value)
+        case .movement: store.setMovementGoal(value)
+        case .sleep: store.setSleepGoal(value)
+        case .cigarettes: store.setCigarettesGoal(value)
         case .todo: break
         }
     }
@@ -1641,6 +1884,7 @@ struct ContentView: View {
         // Seed the wheel with the tracker's current goal, snapped
         // into the wheel's own steps so it lands exactly on a row.
         pendingGoal = snappedGoal(goalValue(for: kind), for: kind)
+        pendingGoalMode = store.goalMode(for: kind)
         goalSheetKind = kind
     }
     #endif
@@ -1977,6 +2221,8 @@ struct ContentView: View {
     private var settingsRootRows: some View {
         Button("trackers") { settingsPath.append(.todos) }
             .frame(height: lineHeight)
+        Button("all logs") { settingsPath.append(.allLogs) }
+            .frame(height: lineHeight)
         Button("test stuff") { settingsPath.append(.testStuff) }
             .frame(height: lineHeight)
     }
@@ -2018,6 +2264,14 @@ struct ContentView: View {
             trackerRow(.coffee)
             sectionGapCatcher
             trackerRow(.carbs)
+            sectionGapCatcher
+            trackerRow(.steps)
+            sectionGapCatcher
+            trackerRow(.movement)
+            sectionGapCatcher
+            trackerRow(.sleep)
+            sectionGapCatcher
+            trackerRow(.cigarettes)
 
             Color.clear
                 .frame(maxWidth: .infinity, minHeight: 120, maxHeight: .infinity)
@@ -2078,6 +2332,313 @@ struct ContentView: View {
                 Text("Deletes every water, protein, coffee, carbs, and to-do entry ever logged — today included. Goals and to-do names are kept. This can't be undone.")
             }
         #endif
+    }
+
+    // MARK: - All logs (every entry, any tracker, swipe to delete)
+    //
+    // For fixing a mis-tap: `resetToday()` only reaches today and
+    // wipes it wholesale, `clearAllHistory()` is everything-or-
+    // nothing — neither lets you take back ONE wrong "+700" from
+    // three days ago. This lists every entry from every tracker
+    // (regardless of whether that tracker is currently enabled —
+    // History already judges old days that way, so a log staying
+    // visible after its tracker's turned off is consistent, not a
+    // bug), newest first, grouped by day, one swipe from gone.
+
+    /// One row in the log — a thin display-only wrapper over
+    /// whichever entry type it came from; `kind` is what
+    /// `store.deleteLogEntry` needs to find and remove the real thing.
+    private struct LogRow: Identifiable {
+        let id: UUID
+        let kind: TrackerKind
+        let amount: Int
+        let timestamp: Date
+    }
+
+    private var allLogRows: [LogRow] {
+        let water = store.data.entries.map { LogRow(id: $0.id, kind: .water, amount: $0.amountML, timestamp: $0.timestamp) }
+        let protein = store.data.proteinEntries.map { LogRow(id: $0.id, kind: .protein, amount: $0.amountG, timestamp: $0.timestamp) }
+        let coffee = store.data.coffeeEntries.map { LogRow(id: $0.id, kind: .coffee, amount: $0.amountCups, timestamp: $0.timestamp) }
+        let carbs = store.data.carbsEntries.map { LogRow(id: $0.id, kind: .carbs, amount: $0.amountG, timestamp: $0.timestamp) }
+        let steps = store.data.stepsEntries.map { LogRow(id: $0.id, kind: .steps, amount: $0.amountSteps, timestamp: $0.timestamp) }
+        let movement = store.data.movementEntries.map { LogRow(id: $0.id, kind: .movement, amount: $0.amountMin, timestamp: $0.timestamp) }
+        let sleep = store.data.sleepEntries.map { LogRow(id: $0.id, kind: .sleep, amount: $0.amountHr, timestamp: $0.timestamp) }
+        return (water + protein + coffee + carbs + steps + movement + sleep)
+            .sorted { $0.timestamp > $1.timestamp }
+    }
+
+    /// `allLogRows`, bucketed into calendar days (newest day first,
+    /// newest entry first within each day) — the shape the day-header
+    /// grouping in the list needs.
+    private var logDayGroups: [(day: Date, rows: [LogRow])] {
+        let cal = Calendar.current
+        let byDay = Dictionary(grouping: allLogRows) { cal.startOfDay(for: $0.timestamp) }
+        return byDay.keys.sorted(by: >).map { day in (day: day, rows: byDay[day] ?? []) }
+    }
+
+    private static let logDayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "dd.MM.yyyy"
+        return f
+    }()
+
+    private static let logTimeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "HH:mm"
+        return f
+    }()
+
+    /// "protein - 10gr" — no space before the unit on purpose, kept
+    /// tight so it reads as one token next to the tracker name, the
+    /// same density the reference design used.
+    private func logRowLabel(_ row: LogRow) -> String {
+        "\(row.kind.label) - \(Self.formatAmount(row.amount))\(row.kind.unit)"
+    }
+
+    /// Day headers read "today" for the current day rather than its
+    /// date — the one group you're most likely scanning for, and the
+    /// same shorthand every other app's log/history list uses.
+    /// Yesterday deliberately stays a date: "yesterday" is a second
+    /// special case to keep straight for very little gain once you're
+    /// already reading down a dated list.
+    private func logDayLabel(_ day: Date) -> String {
+        Calendar.current.isDateInToday(day)
+            ? "today"
+            : Self.logDayFormatter.string(from: day)
+    }
+
+    /// Plain content row — no leading icon any more (see
+    /// `SwipeToDeleteRow` for how deletion happens now). Taller than
+    /// the original `lineHeight + 8` for more visual "body", per the
+    /// reference design.
+    private func logRowView(_ row: LogRow) -> some View {
+        HStack {
+            Text(Self.logTimeFormatter.string(from: row.timestamp))
+            Spacer()
+            Text(logRowLabel(row))
+        }
+        .padding(.horizontal, 16)
+        .frame(height: lineHeight + 16)
+        .background(logRowBG, in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    /// Reminders/Mail-style swipe-left-to-reveal-trash, built by hand
+    /// with a plain `DragGesture` rather than `List`'s `.swipeActions`.
+    /// `.swipeActions` was tried first and dropped for two reasons:
+    /// (1) it can only ever show a rectangular full-height slab, never
+    /// the reference design's floating BLACK CIRCLE badge, and (2)
+    /// extensive simulator testing found a synthesized drag/pan
+    /// touch never actually revealed it (bare `Text` rows, no
+    /// grouping, no styling — all ruled out one at a time) even
+    /// though a plain tap on the same row worked every time — this
+    /// hand-rolled version uses a `DragGesture`, different machinery
+    /// entirely from `UISwipeActionsConfiguration`'s continuous-
+    /// tracking pan recognizer, and needs re-confirming against the
+    /// same tooling rather than assumed fixed.
+    #if os(iOS)
+    /// A real `UIPanGestureRecognizer`, bridged in, whose delegate
+    /// answers YES to `shouldRecognizeSimultaneouslyWith` for
+    /// everything — which is the whole point of it existing. UIKit
+    /// asks BOTH competing recognizers for permission before letting
+    /// them track the same touch; SwiftUI's `.simultaneousGesture`
+    /// only ever answers for its own gesture, so an enclosing
+    /// ScrollView's system pan recognizer still refused to start on a
+    /// touch that began over a row. Owning the recognizer means owning
+    /// its delegate, and that's the only place that answer can be
+    /// given. Reports its translation in the recognizer's own view.
+    private struct SimultaneousPan: UIGestureRecognizerRepresentable {
+        let onChange: (CGSize) -> Void
+        let onEnd: (CGSize) -> Void
+
+        func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator {
+            Coordinator()
+        }
+
+        func makeUIGestureRecognizer(context: Context) -> UIPanGestureRecognizer {
+            let pan = UIPanGestureRecognizer()
+            pan.delegate = context.coordinator
+            return pan
+        }
+
+        func updateUIGestureRecognizer(_ recognizer: UIPanGestureRecognizer, context: Context) {}
+
+        func handleUIGestureRecognizerAction(_ recognizer: UIPanGestureRecognizer, context: Context) {
+            let translation = recognizer.translation(in: recognizer.view)
+            let size = CGSize(width: translation.x, height: translation.y)
+            switch recognizer.state {
+            case .changed:
+                onChange(size)
+            case .ended, .cancelled, .failed:
+                onEnd(size)
+            default:
+                break
+            }
+        }
+
+        final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+            func gestureRecognizer(
+                _ gestureRecognizer: UIGestureRecognizer,
+                shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+            ) -> Bool {
+                true
+            }
+        }
+    }
+    #endif
+
+    private struct SwipeToDeleteRow<Content: View>: View {
+        let onDelete: () -> Void
+        let content: () -> Content
+
+        @State private var isRevealed = false
+        @State private var dragTranslation: CGFloat = 0
+        private let revealWidth: CGFloat = 64
+        /// Horizontal slack before the row starts following the finger
+        /// — without it, the couple of pixels of sideways jitter in a
+        /// normal vertical flick would nudge the row.
+        private let activationSlack: CGFloat = 10
+
+        init(onDelete: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
+            self.onDelete = onDelete
+            self.content = content
+        }
+
+        var body: some View {
+            let baseOffset: CGFloat = isRevealed ? -revealWidth : 0
+            ZStack(alignment: .trailing) {
+                // Declared FIRST (SwiftUI's ZStack z-orders later
+                // children on top), so the trash button below stays
+                // frontmost and reliably hit-testable in the gap this
+                // leaves exposed — content's own hit-shape, despite
+                // moving with `.offset`, was intercepting taps meant
+                // for the button otherwise.
+                swipeableContent(baseOffset: baseOffset)
+
+                Button(action: onDelete) {
+                    Image(systemName: "trash")
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .background(Circle().fill(Color.black))
+                }
+                .buttonStyle(.plain)
+                .opacity(isRevealed ? 1 : 0)
+                .allowsHitTesting(isRevealed)
+            }
+        }
+
+        // Two gesture paths, because the coexistence problem this
+        // solves is an iOS-touch-only one:
+        //
+        // iOS gets a REAL `UIPanGestureRecognizer` (see
+        // `SimultaneousPan`). `.gesture` and even
+        // `.simultaneousGesture(DragGesture())` were both tried first
+        // and both broke scrolling in the same telling way: a drag
+        // STARTED on a row did nothing, a drag started on the
+        // background between rows scrolled fine, and a drag started on
+        // a row WHILE the list was already coasting kept scrolling.
+        // That's the signature of the enclosing ScrollView's own pan
+        // recognizer never being allowed to start — UIKit asks BOTH
+        // recognizers whether they'll run together, and
+        // `.simultaneousGesture` only answers for SwiftUI's side; the
+        // system scroll recognizer never agreed back. Bridging a real
+        // recognizer is what lets us answer for both, via its delegate.
+        //
+        // macOS keeps the plain `DragGesture`: scrolling there is
+        // scroll-wheel/trackpad-scroll events, not a pan recognizer, so
+        // there's nothing to compete with in the first place.
+        @ViewBuilder
+        private func swipeableContent(baseOffset: CGFloat) -> some View {
+            let base = content()
+                .offset(x: baseOffset + dragTranslation)
+                .contentShape(Rectangle())
+
+            #if os(iOS)
+            base
+                .gesture(
+                    SimultaneousPan(
+                        onChange: { handleDragChange($0, baseOffset: baseOffset) },
+                        onEnd: { handleDragEnd($0, baseOffset: baseOffset) }
+                    )
+                )
+                .onTapGesture { collapseIfRevealed() }
+            #else
+            base
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: activationSlack)
+                        .onChanged { handleDragChange($0.translation, baseOffset: baseOffset) }
+                        .onEnded { handleDragEnd($0.translation, baseOffset: baseOffset) }
+                )
+                .onTapGesture { collapseIfRevealed() }
+            #endif
+        }
+
+        /// Only a clearly-horizontal drag moves the row. A vertical one
+        /// is the ScrollView's (it's recognizing simultaneously now),
+        /// so this deliberately does nothing and lets it scroll.
+        private func handleDragChange(_ translation: CGSize, baseOffset: CGFloat) {
+            let dx = translation.width
+            let dy = translation.height
+            guard abs(dx) > abs(dy), abs(dx) > activationSlack else { return }
+            let proposed = baseOffset + dx
+            dragTranslation = min(0, max(-revealWidth, proposed)) - baseOffset
+        }
+
+        private func handleDragEnd(_ translation: CGSize, baseOffset: CGFloat) {
+            let dx = translation.width
+            let dy = translation.height
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                if abs(dx) > abs(dy), abs(dx) > activationSlack {
+                    isRevealed = (baseOffset + dragTranslation) < -revealWidth / 2
+                }
+                dragTranslation = 0
+            }
+        }
+
+        private func collapseIfRevealed() {
+            guard isRevealed else { return }
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) { isRevealed = false }
+        }
+    }
+
+    /// A plain `ScrollView`/`LazyVStack`, not `List` — `List` is what
+    /// made `.swipeActions` free, but that's gone now (see
+    /// `SwipeToDeleteRow`), and a `List` fighting a hand-rolled
+    /// horizontal `DragGesture` for its OWN vertical scroll gesture is
+    /// exactly the kind of interference this file has been burned by
+    /// before. Horizontal padding matches the trackers page's own
+    /// `sideInset` now (was flush to the screen edge, using only the
+    /// row's internal 16pt as margin); the 1pt vertical padding per
+    /// row means ~2pt between consecutive cards, tighter than the
+    /// original 8pt gap.
+    private var allLogsList: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                ForEach(logDayGroups, id: \.day) { group in
+                    Text(logDayLabel(group.day))
+                        .font(textFont())
+                        .foregroundStyle(fillNavy)
+                        .padding(.top, 12)
+                        .padding(.bottom, 4)
+
+                    ForEach(group.rows) { row in
+                        SwipeToDeleteRow {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+                                store.deleteLogEntry(id: row.id, kind: row.kind)
+                            }
+                        } content: {
+                            logRowView(row)
+                        }
+                        .padding(.vertical, 1)
+                    }
+                }
+            }
+            .padding(.horizontal, sideInset)
+        }
+        .buttonStyle(.plain)
+        .font(textFont())
     }
 
     // MARK: - History (combined: water + protein + to-do per day)
@@ -2649,6 +3210,8 @@ struct ContentView: View {
             switch destination {
             case .todos:
                 todosPageRows
+            case .allLogs:
+                allLogsList
             case .testStuff:
                 testStuffRows
             }
@@ -2732,6 +3295,47 @@ struct ContentView: View {
         glassCircleButton(systemName: systemName, action: action)
     }
 
+    /// Calendar-style pill switch (min/max — see `goalSheet`), built
+    /// to match `circleIconButton`'s own weight/feel: same 44pt
+    /// height, same Liquid Glass material on the outer capsule. The
+    /// native `.pickerStyle(.segmented)` was tried first and read too
+    /// small/flat sitting next to the circular glass X/checkmark —
+    /// this reuses that exact material instead of the system control.
+    private func goalModePill(selection: Binding<GoalMode>) -> some View {
+        HStack(spacing: 2) {
+            goalModeSegment(.min, label: "min", selection: selection)
+            goalModeSegment(.max, label: "max", selection: selection)
+        }
+        .padding(4)
+        .frame(height: 44)
+        .glassEffect(.regular.interactive(), in: Capsule())
+    }
+
+    /// One tap target inside `goalModePill` — plain text normally,
+    /// but the selected side gets its own solid capsule (fillNavy, so
+    /// it's dark-on-light or light-on-dark to match whichever mode
+    /// the system is in) — same dark-pill-on-glass look the reference
+    /// screenshot's own selected segment has.
+    private func goalModeSegment(_ mode: GoalMode, label: String, selection: Binding<GoalMode>) -> some View {
+        let selected = selection.wrappedValue == mode
+        return Button {
+            guard selection.wrappedValue != mode else { return }
+            withAnimation(.easeInOut(duration: 0.2)) { selection.wrappedValue = mode }
+        } label: {
+            Text(label)
+                .font(textFont(20))
+                .foregroundStyle(selected ? pageBG : fillNavy)
+                .frame(maxWidth: .infinity)
+                .frame(height: 36)
+                .background {
+                    if selected {
+                        Capsule().fill(fillNavy)
+                    }
+                }
+        }
+        .buttonStyle(.plain)
+    }
+
     private func settingsSheetTitle(_ title: String) -> some ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title).font(textFont()).foregroundStyle(fillNavy)
@@ -2759,38 +3363,56 @@ struct ContentView: View {
         }
     }
 
+    /// Shared by every settings detail page's toolbar — title (per
+    /// destination) + circular back/close. Factored out so `.allLogs`
+    /// (a `List`, not the shared row-VStack the others use) can get
+    /// the identical chrome without going through that VStack too.
+    @ToolbarContentBuilder
+    private func settingsDetailToolbar(_ destination: SettingsDestination) -> some ToolbarContent {
+        settingsSheetTitle(destination.title)
+        ToolbarItem(placement: .topBarLeading) {
+            circleIconButton(systemName: "chevron.left") { settingsPath.removeLast() }
+        }
+        .sharedBackgroundVisibility(.hidden)
+        ToolbarItem(placement: .topBarTrailing) {
+            circleIconButton(systemName: "xmark") { showingSettingsSheet = false }
+        }
+        .sharedBackgroundVisibility(.hidden)
+    }
+
     @ViewBuilder
     private func settingsSheetDetail(_ destination: SettingsDestination) -> some View {
-        let detailContent = VStack(alignment: .leading, spacing: 0) {
-            switch destination {
-            case .todos:
-                todosPageRows
-            case .testStuff:
-                testStuffRows
+        if destination == .allLogs {
+            allLogsList
+                .foregroundStyle(fillNavy)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(sheetBG)
+                .navigationBarBackButtonHidden(true)
+                .toolbar { settingsDetailToolbar(destination) }
+        } else {
+            let detailContent = VStack(alignment: .leading, spacing: 0) {
+                switch destination {
+                case .todos:
+                    todosPageRows
+                case .testStuff:
+                    testStuffRows
+                case .allLogs:
+                    EmptyView()
+                }
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
-        }
-        .buttonStyle(.plain)
-        .font(textFont())
-        .foregroundStyle(fillNavy)
-        .padding(.horizontal, sideInset)
-        .padding(.top, 12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(sheetBG)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            settingsSheetTitle(destination.title)
-            ToolbarItem(placement: .topBarLeading) {
-                circleIconButton(systemName: "chevron.left") { settingsPath.removeLast() }
-            }
-            .sharedBackgroundVisibility(.hidden)
-            ToolbarItem(placement: .topBarTrailing) {
-                circleIconButton(systemName: "xmark") { showingSettingsSheet = false }
-            }
-            .sharedBackgroundVisibility(.hidden)
-        }
+            .buttonStyle(.plain)
+            .font(textFont())
+            .foregroundStyle(fillNavy)
+            .padding(.horizontal, sideInset)
+            .padding(.top, 12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(sheetBG)
+            .navigationBarBackButtonHidden(true)
+            .toolbar { settingsDetailToolbar(destination) }
 
-        detailContent
+            detailContent
+        }
     }
 
     private var settingsSheet: some View {
@@ -2897,8 +3519,53 @@ struct ContentView: View {
     /// the normal delete/save pair.
     private func goalSheet(for kind: TrackerKind, allowDelete: Bool = true) -> some View {
         let isOn = store.isTrackerEnabled(kind) && allowDelete
+        let showsModeSwitch = kind.supportsGoalModeSwitch
+
+        // Shared by the mode-switch checkmark AND the plain save/add
+        // button below — same commit either kind ends up taking, the
+        // mode-switch kinds just also stage `pendingGoalMode` first.
+        func commitAndClose() {
+            if showsModeSwitch {
+                store.setGoalMode(pendingGoalMode, for: kind)
+            }
+            commitGoal(pendingGoal, for: kind)
+            if !store.isTrackerEnabled(kind) { store.toggleTracker(kind) }
+            goalSheetKind = nil
+            tourGoalKind = nil
+        }
+        func cancelAndClose() {
+            goalSheetKind = nil
+            tourGoalKind = nil
+        }
+
         return NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
+                // Calendar-style top bar — EVERY tracker's goal sheet
+                // now uses this, not just coffee/calories/cigarettes:
+                // circular X (cancel) and checkmark (commit) flanking
+                // either the min/max pill (mode-switch trackers) or
+                // just the tracker's own name (everyone else), same
+                // material/size either way. This is the sheet's ONLY
+                // commit control — the old plain "save"/"add" text
+                // button at the bottom is gone, the checkmark does its
+                // job everywhere now.
+                HStack {
+                    circleIconButton(systemName: "xmark") { cancelAndClose() }
+                    Spacer(minLength: 0)
+                    if showsModeSwitch {
+                        goalModePill(selection: $pendingGoalMode)
+                            .frame(maxWidth: 240)
+                    } else {
+                        Text(kind.label)
+                            .font(textFont())
+                            .foregroundStyle(fillNavy)
+                    }
+                    Spacer(minLength: 0)
+                    circleIconButton(systemName: "checkmark") { commitAndClose() }
+                }
+                .frame(height: 44)
+                .padding(.top, 12)
+
                 Spacer(minLength: 0)
                 Picker("", selection: $pendingGoal) {
                     ForEach(goalCandidates(for: kind), id: \.self) { value in
@@ -2914,8 +3581,13 @@ struct ContentView: View {
                 .frame(height: 160)
                 Spacer(minLength: 0)
 
-                HStack {
-                    if isOn {
+                // Only ever "delete" now (the checkmark above covers
+                // save/add for everyone) — centered, same as every
+                // other single-button layover in this app rather than
+                // hugging the leading edge.
+                if isOn {
+                    HStack {
+                        Spacer()
                         Button("delete") {
                             store.toggleTracker(kind)
                             if !store.isTrackerEnabled(activeMetric) {
@@ -2925,28 +3597,9 @@ struct ContentView: View {
                         }
                         .foregroundStyle(fillProtein)
                         Spacer()
-                        Button("save") {
-                            commitGoal(pendingGoal, for: kind)
-                            goalSheetKind = nil
-                            tourGoalKind = nil
-                        }
-                    } else {
-                        Spacer()
-                        // "save" (not "add") when the tracker is
-                        // already on and we're only hiding delete —
-                        // that's the tour. Toggling would switch a
-                        // live tracker OFF, the opposite of the point.
-                        let alreadyOn = store.isTrackerEnabled(kind)
-                        Button(alreadyOn ? "save" : "add") {
-                            commitGoal(pendingGoal, for: kind)
-                            if !alreadyOn { store.toggleTracker(kind) }
-                            goalSheetKind = nil
-                            tourGoalKind = nil
-                        }
-                        Spacer()
                     }
+                    .frame(height: lineHeight)
                 }
-                .frame(height: lineHeight)
             }
             .buttonStyle(.plain)
             .font(textFont())
@@ -2954,16 +3607,6 @@ struct ContentView: View {
             .padding(.horizontal, sideInset)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(sheetBG)
-            .toolbar {
-                settingsSheetTitle(kind.label)
-                ToolbarItem(placement: .topBarTrailing) {
-                    circleIconButton(systemName: "xmark") {
-                        goalSheetKind = nil
-                        tourGoalKind = nil
-                    }
-                }
-                .sharedBackgroundVisibility(.hidden)
-            }
         }
         .presentationDetents([.medium])
         .presentationDragIndicator(.visible)
