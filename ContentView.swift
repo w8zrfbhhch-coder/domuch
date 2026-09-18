@@ -405,6 +405,24 @@ struct TodoTextField: UIViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
+    /// Takes exactly the width it's offered — no more, no less. Left to
+    /// itself a `UITextField` won't compress below its text's width, so
+    /// one long to-do name (say "call the dentist about the
+    /// appointment") shoved the whole trackers page sideways off the
+    /// screen. It MUST still fill the offered width, though, not shrink
+    /// to its text: the right-aligned text only sits against the row's
+    /// right edge because the field spans the row. Sizing it to the
+    /// text was tried and put a freshly typed to-do in the middle of
+    /// the row. A long name now scrolls inside the field instead.
+    func sizeThatFits(
+        _ proposal: ProposedViewSize,
+        uiView: BackspaceReportingTextField,
+        context: Context
+    ) -> CGSize? {
+        guard let width = proposal.width, width.isFinite else { return nil }
+        return CGSize(width: width, height: uiView.intrinsicContentSize.height)
+    }
+
     final class Coordinator: NSObject, UITextFieldDelegate {
         var parent: TodoTextField
 
@@ -651,7 +669,13 @@ struct ContentView: View {
     private let lineHeight: CGFloat = 40    // confirmed: line-height everywhere (incl. popups)
     /// Gap between top-level tracker sections on the trackers page
     /// (to-do / water / protein / coffee / carbs) — see `todosPageRows`.
+    /// Tighter on iOS since the page gained more trackers; macOS keeps
+    /// its original 20.
+    #if os(iOS)
+    private let trackerSectionGap: CGFloat = 10
+    #else
     private let trackerSectionGap: CGFloat = 20
+    #endif
 
     // MARK: History layout
     //
@@ -880,6 +904,11 @@ struct ContentView: View {
     // put it at the mercy of that record's last-write-wins merge.
     // Each device therefore shows the tour exactly once.
     @AppStorage("hasSeenFirstRunTour") private var hasSeenTour = false
+    // History's streak legend card, once its X is tapped. Same
+    // reasoning as `hasSeenTour` for living in UserDefaults rather
+    // than `AppData`: whether you still need the key explained is
+    // about this device, not the account.
+    @AppStorage("hasHiddenHistoryLegend") private var hasHiddenHistoryLegend = false
     // Ships OFF: this build's TestFlight users shouldn't see the tour
     // yet, but it should stay reachable for testing — see
     // "replay tour" under test stuff, and the `onAppear` this gates.
@@ -2318,6 +2347,11 @@ struct ContentView: View {
             showingTour = true
         }
         .frame(height: lineHeight)
+
+        // Once the streak legend card's X is tapped it's gone for
+        // good on this device — this puts it back.
+        Button("show streak legend") { hasHiddenHistoryLegend = false }
+            .frame(height: lineHeight)
         #endif
 
         // Separate from the two above — this wipes REAL history too,
@@ -2844,6 +2878,44 @@ struct ContentView: View {
         }
     }
 
+    #if os(iOS)
+    /// `historyLegend` in a rounded card with an X in its top-right
+    /// corner, so it can be put away once the marks make sense —
+    /// modelled on the reference design's dismissible card (its "…"
+    /// swapped for an X). The X is the same glass circle every other
+    /// close in the app uses, just scaled down to sit inside a card.
+    /// iOS only: `historyFullPage` is shared with the macOS app, which
+    /// keeps its plain legend.
+    private var historyLegendCard: some View {
+        // The X gets its own row above the legend rather than being
+        // overlaid on the corner: overlaid, it sat on top of the first
+        // row's text ("not registered yet").
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Spacer()
+                glassCircleButton(systemName: "xmark", diameter: 32) {
+                    withAnimation(.easeOut(duration: 0.25)) { hasHiddenHistoryLegend = true }
+                }
+            }
+            historyLegend
+                // The card's padding costs width the bare legend never
+                // had to give up, and "= registered something" is right
+                // at the edge on a Pro-size phone — let a line shrink a
+                // touch on narrower screens instead of truncating.
+                .minimumScaleFactor(0.8)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 16)
+        // 20, not 12: at 12 the X's circle crowded into the card's
+        // rounded top-right corner.
+        .padding(.top, 20)
+        .padding(.bottom, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(logRowBG, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .transition(.opacity)
+    }
+    #endif
+
     // Six columns, today top-left, walking BACKWARDS through time to
     // the right and down. No week boundaries any more — "which weekday
     // was this" is deliberately gone, and what's left reads as "how
@@ -3037,7 +3109,13 @@ struct ContentView: View {
                     // legend rides down to the end of the scroll.
                     Spacer(minLength: historyLegendMinGap)
 
+                    #if os(iOS)
+                    if !hasHiddenHistoryLegend {
+                        historyLegendCard
+                    }
+                    #else
                     historyLegend
+                    #endif
                 }
                 // minHeight (not height): exactly a screenful while it
                 // fits, free to grow taller once it doesn't.
@@ -3375,7 +3453,14 @@ struct ContentView: View {
         }
         .sharedBackgroundVisibility(.hidden)
         ToolbarItem(placement: .topBarTrailing) {
-            circleIconButton(systemName: "xmark") { showingSettingsSheet = false }
+            // A checkmark on the trackers page: you close it after
+            // changing things (goals, trackers on/off, to-dos), so it
+            // reads as "done" — same as the goal sheets' ✓. It still
+            // just closes; every change there is already saved as it's
+            // made. Pages you only look at keep the X.
+            circleIconButton(systemName: destination == .todos ? "checkmark" : "xmark") {
+                showingSettingsSheet = false
+            }
         }
         .sharedBackgroundVisibility(.hidden)
     }
@@ -3389,6 +3474,41 @@ struct ContentView: View {
                 .background(sheetBG)
                 .navigationBarBackButtonHidden(true)
                 .toolbar { settingsDetailToolbar(destination) }
+        } else if destination == .todos {
+            let trackersTopPadding: CGFloat = 34
+            // Scrolls, like "all logs" — with every tracker listed it
+            // outgrew the screen. minHeight keeps the content at least
+            // a screenful so the tap-catcher at the bottom of
+            // `todosPageRows` (tap below the rows to stop editing a
+            // to-do) still stretches over all the empty space, same
+            // minHeight trick `historyFullPage` uses. Horizontal
+            // padding sits on the content, not the ScrollView, so the
+            // scroll indicator stays flush with the screen edge.
+            GeometryReader { geo in
+                ScrollView {
+                    todosPageRows
+                        .frame(maxWidth: .infinity, minHeight: max(0, geo.size.height - trackersTopPadding), alignment: .topLeading)
+                        .padding(.horizontal, sideInset)
+                        .padding(.top, trackersTopPadding)
+                }
+            }
+            // With a ScrollView at its root the navigation bar reserves
+            // room for a large title — the rows started ~30pt lower than
+            // when this page was a plain VStack. Inline removes that, but
+            // inline is also ~22pt shorter than the bar the plain VStack
+            // page sat under, hence `trackersTopPadding` being 34 rather
+            // than the 12 the other settings pages use: that puts the
+            // first row back exactly where it was. (Zeroing the scroll
+            // content margin did nothing: it's the bar, not the scroll
+            // inset.)
+            .navigationBarTitleDisplayMode(.inline)
+            .buttonStyle(.plain)
+            .font(textFont())
+            .foregroundStyle(fillNavy)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(sheetBG)
+            .navigationBarBackButtonHidden(true)
+            .toolbar { settingsDetailToolbar(destination) }
         } else {
             let detailContent = VStack(alignment: .leading, spacing: 0) {
                 switch destination {
